@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include nexthink.clickhouse_keeper"
+      include_role:
+        name: "nexthink.clickhouse_keeper"
