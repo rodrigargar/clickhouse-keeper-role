@@ -4,9 +4,17 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: instance
-    image: quay.io/centos/centos:stream8
-    pre_build_image: true
+  - name: zookeeper01
+    image: amazonlinux
+    pre_build_image: no
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns_mode: host
+    privileged: true
 provisioner:
   name: ansible
 verifier:
