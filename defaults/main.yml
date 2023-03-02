@@ -1,2 +1,23 @@
 ---
-# defaults file for clickhouse_keeper
+# Negate when running clickhouse keeper along with clickhouse server
+clickhouse_keeper_standalone: yes
+clickhouse_keeper_version: "22.3.12.19"
+clickhouse_keeper_allow_downgrade: no
+clickhouse_keeper_hostname_regex: "^zookeeper(\\d{2})$"
+clickhouse_keeper_servers: "{{ groups['zookeeper'] }}"
+
+clickhouse_keeper_group: clickhouse
+clickhouse_keeper_user: clickhouse
+
+clickhouse_keeper_repo: "https://github.com/ClickHouse/ClickHouse/releases/download/v{{ clickhouse_keeper_version }}-lts"
+clickhouse_keeper_package_arch: "x86_64"
+clickhouse_keeper_package:
+  - "clickhouse-common-static-{{ clickhouse_keeper_version }}.{{ clickhouse_keeper_package_arch }}.rpm"
+  - "clickhouse-server-{{ clickhouse_keeper_version }}.{{ clickhouse_keeper_package_arch }}.rpm"
+clickhouse_keeper_exclude_package:
+
+clickhouse_keeper_server_port: 9181
+clickhouse_keeper_peer_port: 9444
+clickhouse_keeper_operation_timeout_ms: 10000
+clickhouse_keeper_session_timeout_ms: 30000
+clickhouse_keeper_raft_logs_level: info

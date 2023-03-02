@@ -1,0 +1,55 @@
+- name: Ensure clickhouse group
+  group:
+    name: "{{ clickhouse_keeper_group }}"
+    system: yes
+    state: present
+
+- name: Ensure clickhouse user
+  user:
+    name: "{{ clickhouse_keeper_user }}"
+    group: "{{ clickhouse_keeper_group }}"
+    system: yes
+    shell: /usr/sbin/nologin
+    createhome: no
+
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: "Install CH version if and only if it does not exist"
+  block:
+    - name: Create temporary ch dir
+      ansible.builtin.tempfile:
+        state: directory
+        suffix: ch_temp
+      register: ch_rpm_tmp_dir
+
+    - name: Download Clickhouse Packages
+      ansible.builtin.get_url:
+        url: "{{ clickhouse_keeper_repo }}/{{ item }}"
+        dest: "{{ ch_rpm_tmp_dir.path }}/{{ item }}"
+        mode: 0755
+        timeout: 30
+      loop: "{{ clickhouse_keeper_package }}"
+      retries: 5
+      delay: "{{ 16 | random }}"
+
+    - name: Ensure clickhouse official repo absent
+      yum_repository:
+        name: clickhouse
+        file: clickhouse
+        state: absent
+
+    - name: Ensure clickhouse package installed from localhost
+      yum:
+        name: "{{ [ch_rpm_tmp_dir.path] | product(clickhouse_keeper_package) | map('join', '/') | list }}"
+        state: present
+        exclude: "{{ clickhouse_keeper_exclude_package | default('clickhouse-client') }}"
+        allow_downgrade: "{{ clickhouse_keeper_allow_downgrade }}" # for rollback purposes
+
+    - name: Delete temporary ch dir
+      file:
+        path: "{{ ch_rpm_tmp_dir.path }}"
+        state: absent
+
+  when: (('clickhouse-server' not in ansible_facts.packages) or (ansible_facts.packages['clickhouse-server'][0].version != clickhouse_keeper_version )) #block-when
