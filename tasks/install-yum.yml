@@ -1,3 +1,4 @@
+---
 - name: Ensure clickhouse group
   group:
     name: "{{ clickhouse_keeper_group }}"

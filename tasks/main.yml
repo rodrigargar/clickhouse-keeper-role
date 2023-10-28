@@ -1,2 +1,7 @@
 ---
 # tasks file for clickhouse_keeper
+- import_tasks: install-yum.yml
+  tags: [chk::install]
+
+- import_tasks: configure.yml
+  tags: [chk::configure]

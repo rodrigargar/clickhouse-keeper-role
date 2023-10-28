@@ -1,0 +1,20 @@
+---
+- name: Create coordination directories
+  ansible.builtin.file:
+    path: '{{ item }}'
+    group: '{{ clickhouse_keeper_group }}'
+    owner: '{{ clickhouse_keeper_user }}'
+    state: directory
+    mode: 0755
+  loop:
+    - '{{ clickhouse_keeper_storage_path }}'
+    - '{{ clickhouse_keeper_log_path }}'
+    - '{{ clickhouse_keeper_snapshots_path }}'
+
+- name: Create configuration file
+  ansible.builtin.template:
+    src: config.xml.j2
+    dest: '{{ clickhouse_keeper_storage_path }}'
+    mode: 0644
+  notify:
+    - restart-chk

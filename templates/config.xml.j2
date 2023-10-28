@@ -1,30 +1,22 @@
 <keeper_server>
-    <tcp_port>9181</tcp_port>
-    <server_id>1</server_id>
-    <log_storage_path>/var/lib/clickhouse/coordination/log</log_storage_path>
-    <snapshot_storage_path>/var/lib/clickhouse/coordination/snapshots</snapshot_storage_path>
+    <tcp_port>{{ clickhouse_keeper_server_port }}</tcp_port>
+    <server_id>{{ clickhouse_kepper_servers_id[inventory_hostname]}}</server_id>
+    <log_storage_path>{{ clickhouse_keeper_log_path }}</log_storage_path>
+    <snapshot_storage_path>{{ clickhouse_keeper_snapshots_path }}</snapshot_storage_path>
 
     <coordination_settings>
-        <operation_timeout_ms>10000</operation_timeout_ms>
-        <session_timeout_ms>30000</session_timeout_ms>
-        <raft_logs_level>warning</raft_logs_level>
+        <operation_timeout_ms>{{ clickhouse_keeper_operation_timeout_ms }}</operation_timeout_ms>
+        <session_timeout_ms>{{ clickhouse_keeper_session_timeout_ms }}</session_timeout_ms>
+        <raft_logs_level>{{clickhouse_keeper_raft_logs_level }}</raft_logs_level>
     </coordination_settings>
 
     <raft_configuration>
+{% for keeper_server in clickhouse_keeper_servers %}
         <server>
-            <id>1</id>
-            <hostname>chnode1.domain.com</hostname>
-            <port>9444</port>
+            <id>{{ clickhouse_keeper_servers_id[keeper_server] }}</id>
+            <hostname>{{ keeper_server }}</hostname>
+            <port>{{ clickhouse_keeper_raft_port }}</port>
         </server>
-        <server>
-            <id>2</id>
-            <hostname>chnode2.domain.com</hostname>
-            <port>9444</port>
-        </server>
-        <server>
-            <id>3</id>
-            <hostname>chnode3.domain.com</hostname>
-            <port>9444</port>
-        </server>
+{% endfor % }
     </raft_configuration>
 </keeper_server>

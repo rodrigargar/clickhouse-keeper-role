@@ -11,7 +11,14 @@ Any pre-requisites that may not be covered by Ansible itself or the role should 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+| Name                                   | Description                                             | Default
+|----------------------------------------|---------------------------------------------------------|------------------------------------------------
+| clickhouse_keeper_server_port          | Port number to be used by clients of keeper             | 9181 default equivalent of 2181 as in zookeeper
+| clickhouse_keeper_peer_port            | Port number to listen to interserver keeper connections | 9444
+| clickhouse_keeper_server_id            | Identifier of the keeper server for raft configuration  | compute from the name of the server
+| clickhouse_keeper_operation_timeout_ms | Time for operations to expire in milliseconds           | 10000
+| clickhouse_keeper_session_timeout_ms   | Time for sessions to expire in milliseconds             | 30000
+| clickhouse_keeper_raft_logs_level      | Level of the logs for the raft protocol                 | info
 
 Dependencies
 ------------

@@ -1,2 +1,3 @@
 ---
-# vars file for clickhouse_keeper
+clickhouse_keeper_servers: "{{ groups['zookeeper'] }}"
+clickhouse_keeper_servers_id: "{{ dict(clickhouse_keeper_servers | zip (clickhouse_keeper_servers | map('extract', hostvars, 'ansible_hostname') | map('regex_search', clickhouse_keeper_hostname_regex, '\\1') | map('first') | map('int'))) }}"

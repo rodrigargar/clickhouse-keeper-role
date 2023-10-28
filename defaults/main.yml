@@ -4,7 +4,6 @@ clickhouse_keeper_standalone: yes
 clickhouse_keeper_version: "22.3.12.19"
 clickhouse_keeper_allow_downgrade: no
 clickhouse_keeper_hostname_regex: "^zookeeper(\\d{2})$"
-clickhouse_keeper_servers: "{{ groups['zookeeper'] }}"
 
 clickhouse_keeper_group: clickhouse
 clickhouse_keeper_user: clickhouse
@@ -16,8 +15,12 @@ clickhouse_keeper_package:
   - "clickhouse-server-{{ clickhouse_keeper_version }}.{{ clickhouse_keeper_package_arch }}.rpm"
 clickhouse_keeper_exclude_package:
 
-clickhouse_keeper_server_port: 9181
-clickhouse_keeper_peer_port: 9444
+clickhouse_keeper_server_port: 2181
+clickhouse_keeper_raft_port: 3888
 clickhouse_keeper_operation_timeout_ms: 10000
 clickhouse_keeper_session_timeout_ms: 30000
 clickhouse_keeper_raft_logs_level: info
+
+clickhouse_keeper_storage_path: "/var/lib/clickhouse/coordination"
+clickhouse_keeper_log_path: "{{ clickhouse_keeper_storage_path }}/log"
+clickhouse_keeper_snapshots_path: "{{ clickhouse_keeper_storage_path }}/snapshots"
