@@ -1,2 +1,3 @@
 ---
-# handlers file for clickhouse_keeper
+- name: restart-chk
+  ansible.builtin.command: clickhouse keeper --config-file {{ clickhouse_keeper_storage_path }}/config.xml
